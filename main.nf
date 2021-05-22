@@ -100,6 +100,11 @@ process star_index{
 
 params.reads = "/data/MSc/2021/clipseq/sirna_trimmed_chr20.fq.gz"
 
+Channel.fromFilePairs(params.reads)
+       .into{ fastqc_reads; trimming_reads; raw_reads }
+
+process FastQC {
+
       publishDir "${params.outdir}/QC/raw", mode:'copy'
 
       input:
