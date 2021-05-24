@@ -26,6 +26,10 @@ ch_fasta_star = Channel.value(params.refgenome_path)
 ch_fasta_dreme_piranha = Channel.value(params.refgenome_path)
 
 
+////////////////////////////////////////////////////
+/* --             PREPROCESSING                -- */
+////////////////////////////////////////////////////
+
 
 /*
  * Generating premapping index
@@ -50,6 +54,10 @@ process generate_premap_index{
 
 // Generate fai from reference file
 
+// Index reference sequence in the FASTA format or extract subsequence from indexed reference sequence.
+// Using an fai index file in conjunction with a FASTA/FASTQ file containing reference sequences.
+// This enables efficient access to arbitrary regions within those reference sequences. 
+
 process generate_fai{
 
   tag "$ref"
@@ -67,6 +75,10 @@ process generate_fai{
 }
 
 // Generate STAR index
+
+// Generate STAR index, using STAR to align to the chromosome 20 genome. 
+// Soft-clipping of the 5' end of the read is prevented, ensuring the crosslink position can be correctly identified.
+// This will later be used for an alignment step using STAR
 
 process star_index{
 				
@@ -106,6 +118,10 @@ process star_index{
 
 //Step 1 - FastQC
 
+// FastQC provides a simple way to do quality control checks on raw sequence data 
+// coming from the high throughput sequencers (in this instance Illumina data). 
+// Essentially a sanity check before doing further analysis. 
+
 // Parameters
 
 Channel.fromFilePairs(params.reads)
@@ -133,6 +149,10 @@ process FastQC {
 //Step 2 - Trimming
 // Test fasta file provided was already trimmed
 
+// This is to remove adapters and also quality trim the data. By default the pipeline trims the
+// Illumina universal adapter sequences and filters out reads that are shorter that 12 nt after trimming. 
+// It can also modify and filter single-end and paired-end reads in various ways.
+
 if(params.trimming == true){
     process cutadapt {
 
@@ -159,6 +179,8 @@ if(params.trimming == true){
 
 //Step 3 - Premapping
 
+// For CLIP data analysis it is often important to pre-map to rRNA and tRNA sequences. 
+// We use Bowtie 2 here to align the sequencing reads to the long reference sequences.
 
 process premap {
 
@@ -186,6 +208,8 @@ process premap {
 
 
 //Step 4 - Aligning
+
+// The STAR index generated above is used for STAR alignment. 
 
 process align {
     tag "$name"
@@ -253,6 +277,7 @@ process preseq {
 
 //Step 6 - Deduplicate - Aine
 
+// This section plots measures from the UMI-based PCR deduplication.
 
 process dedup {
 
@@ -275,6 +300,10 @@ process dedup {
 
 
 //Step 7 - Identify crosslinks
+
+// This section plots measures from crosslink identification.
+// Counts shows the number of crosslinks and crosslink sites.
+// Ratios shows the ratio of crosslinks to crosslink sites.
 
 process get_crosslinks {
     tag "$name"
@@ -301,6 +330,14 @@ process get_crosslinks {
 }
 
 //Step 8 - Peak-call (Piranha) - Oisin
+
+// We used the Piranha peak calling tool.
+// This determines high confidence binding sites by removing signals corresponding to unspecific binding
+// It takes input in BED or BAM format and identifies regions of statistically significant read enrichment. 
+// Determine whether the regulatory sequences (e.g., promoters) of a set of genes 
+// have significantly higher than expected affinity for a regulatory protein or microRNA for 
+// which the DNA-binding motif is known. 
+// Piranha is based on the zero-truncated negative binomial regression model.
 
 process piranha_peak_call {
 
@@ -334,6 +371,10 @@ process piranha_peak_call {
 
 //Step 8b - Motif (DREME) - Claire 
 
+// DREME, a motif discovery algorithm specifically designed to find the short, 
+// core DNA-binding motifs of eukaryotic TFs.
+// The sequence from the region +/- 20 nt around the crosslink site is provided as input for DREME.
+
 process piranha_motif_dreme {
 
         tag "$name"
@@ -360,6 +401,8 @@ process piranha_motif_dreme {
 
 //Step 9 - QC plots - Oisin
 
+// Setting up the channels for MultiQC
+
 process clipqc {
 
     publishDir "${params.outdir}/clipqc", mode: 'copy'
@@ -382,6 +425,10 @@ process clipqc {
 
 
 //Step 10 - MultiQC - Oisin
+
+// MultiQC is a visualization tool that generates a single HTML report summarizing all samples in your project. 
+// Most of the pipeline QC results are visualised in the report and further statistics are available in the report data directory.
+// You call the outputs from most of your channels in the script, and it produces the html 
 
 process multiqc {
 
