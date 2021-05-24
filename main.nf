@@ -1,12 +1,14 @@
 #!/usr/bin/env nextflow
 
-// Used CLIP-seq nfcore pipeline as a template, which scripts to run, etc
+// Used CLIP-seq nfcore pipeline as a template
 // https://nf-co.re/clipseq/
-// Assuming inputs are gzipped fasta and gtf files, here hardcoded in
+
+// All code was written together via codeshare whilst also on a zoom call(s). 
+// All parts have been contributed to equally, unless comments in each section state otherwise.
 
 
 // Inputs, Test Dataset plus relevant ref genome
-// Oisin
+// Oisin got the test data
 
 // Setup channels
 ch_smrna_fasta = Channel.value(params.smrna_path)
@@ -127,7 +129,6 @@ process FastQC {
 }
 
 
-
 //Step 2 - Trimming
 // Test fasta file provided was already trimmed
 
@@ -158,8 +159,6 @@ if(params.trimming == true){
 //Step 3 - Premapping
 
 
-// Parameters
-
 process premap {
 
     publishDir "${params.outdir}/premap", mode: 'copy'
@@ -185,8 +184,8 @@ process premap {
 }
 
 
-
 //Step 4 - Aligning
+
 process align {
     tag "$name"
     publishDir "${params.outdir}/mapped", mode: 'copy'
@@ -251,7 +250,7 @@ process preseq {
 }
 
 
-//Step 6 - Deduplicate AINE DID ALL OF THIS <3
+//Step 6 - Deduplicate - Aine
 
 
 process dedup {
@@ -300,7 +299,7 @@ process get_crosslinks {
     """
 }
 
-//Step 8d - Peak-call (Piranha)
+//Step 8 - Peak-call (Piranha) - Oisin
 
 process piranha_peak_call {
 
@@ -333,10 +332,9 @@ process piranha_peak_call {
 }
 
 
-
 //NOT SURE HOW TO DO DREME
 
-//Step 8d2 - Motif (DREME)
+//Step 8b - Motif (DREME) - Oisin attempt
 
 //process piranha_motif_dreme {
 
@@ -362,7 +360,7 @@ process piranha_peak_call {
         //"""
 //}
 
-//Step 8 - QC plots
+//Step 9 - QC plots - Oisin
 
 process clipqc {
 
@@ -385,7 +383,7 @@ process clipqc {
 }
 
 
-//Step 9 - MultiQC
+//Step 10 - MultiQC - Oisin
 
 process multiqc {
 
