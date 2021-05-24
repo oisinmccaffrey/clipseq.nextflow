@@ -14,7 +14,6 @@ ch_ref_fai = Channel.value(params.refgenome_path)
 ch_ref = Channel.value(params.refgenome_path)
 ch_gtf_star = Channel.value(params.gtf_path)
 ch_fastq_fastqc_pretrim = Channel.value(params.fastq_path)
-ch_star_index = Channel.value(params.star_path)
 ch_fasta = Channel.value(params.refgenome_path)
 ch_fastq_umi = Channel.value(params.fastq_path)
 ch_fasta_pureclip = Channel.value(params.refgenome_path)
@@ -80,8 +79,8 @@ process star_index{
         
         path("index_star_ch20") into ch_star_index
 
-				script:
-    		"""
+	script:
+    	"""
         mkdir -p index_star_ch20/
     		
     		STAR \\
