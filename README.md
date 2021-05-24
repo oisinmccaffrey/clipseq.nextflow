@@ -2,6 +2,9 @@
 
 This is a CLIP-seq pipeline. 
 
+Used CLIP-seq nfcore pipeline as a template
+https://nf-co.re/clipseq/
+
 Sync and run pipelines on lugh by running:
 
 nextflow pull https://github.com/oisinmccaffrey/clipseq.nextflow
