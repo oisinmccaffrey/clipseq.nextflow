@@ -65,23 +65,30 @@ process generate_fai{
 
 // Generate STAR index
 
-/*
- * This process is hardcoded, you're not using input and output channels here.
- * please use reference fasta and gtf files as Inputs, "index_star_ch20" as output.
- * remove cd command and repalce with mkdir -p index_star_ch20/
- * (You had the files correctly staged when you showed me the errors?)
- */
-
 process star_index{
+				
+	tag "$fasta"
+    
+   	publishDir path: "${params.outdir}/STAR_index", mode: 'copy'
 
-	script:
-    	"""
-    	cd /data/MSc/2021/clipseq
+
+        input:
+        path(fasta) from ch_fasta_star
+        path(gtf) from ch_gtf_star
+
+        output:
+        
+        path("index_star_ch20") into ch_star_index
+
+				script:
+    		"""
+        mkdir -p index_star_ch20/
+    		
     		STAR \\
         --runMode genomeGenerate \\
         --genomeDir index_star_ch20 \\
-        --genomeFastaFiles /data/MSc/2021/clipseq/ref/chr20.fa \\
-        --sjdbGTFfile /data/MSc/2021/clipseq/ref/chr20.gtf \\
+        --genomeFastaFiles $fasta \\
+        --sjdbGTFfile $gtf \\
         --genomeSAindexNbases 10 \\
         --outFileNamePrefix Hsapiens_chr20 \\
         --runThreadN 4
