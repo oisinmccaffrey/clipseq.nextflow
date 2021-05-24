@@ -105,8 +105,6 @@ process star_index{
 
 // Parameters
 
-params.reads = "/data/MSc/2021/clipseq/sirna_trimmed_chr20.fq.gz"
-
 Channel.fromFilePairs(params.reads)
        .into{ fastqc_reads; trimming_reads; raw_reads }
 
