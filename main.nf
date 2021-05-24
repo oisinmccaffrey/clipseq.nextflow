@@ -129,7 +129,7 @@ process FastQC {
 
 
 //Step 2 - Trimming
-// Test fasta file provided was aready trimmed
+// Test fasta file provided was already trimmed
 
 if(params.trimming == true){
     process cutadapt {
