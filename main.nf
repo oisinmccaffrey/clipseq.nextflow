@@ -23,6 +23,7 @@ ch_multiqc_config = Channel.value(params.multiqc_config)
 ch_output_docs = Channel.value(params.output_docs)
 ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config, checkIfExists: true) : Channel.empty()
 ch_fasta_star = Channel.value(params.refgenome_path)
+ch_fasta_dreme_piranha = Channel.value(params.refgenome_path)
 
 
 
