@@ -3,6 +3,25 @@
 // Used CLIP-seq nfcore pipeline as a template
 // https://nf-co.re/clipseq/
 
+
+// Script can be run using: 
+// nextflow pull https://github.com/oisinmccaffrey/clipseq.nextflow
+// nextflow run -r master https://github.com/oisinmccaffrey/clipseq.nextflow
+
+
+// Or alternatively on lugh using: 
+// cd /data/omccaffrey/MA5112/nextflow_assignment/clipseq.nextflow
+// nextflow run main.nf -with-singularity clipseq.img
+
+
+// Raw files and reference genome locations on lugh: 
+// Test data fasta = "/data/MSc/2021/clipseq/sirna_trimmed_chr20.fa"
+// Test data fastq = "/data/MSc/2021/clipseq/sirna_trimmed_chr20.fq.gz"
+// Reference genome gtf path = "/data/MSc/2021/clipseq/ref/chr20.gtf"
+// Reference genome fasta path = "/data/MSc/2021/clipseq/ref/chr20.fa"
+// Homo sapiens small RNA fasta = "/data/MSc/2021/clipseq/Homo_sapiens.smallRNA.fa"
+
+
 // All code was written together via codeshare whilst also on a zoom call(s). 
 // All parts have been contributed to equally, unless comments in each section state otherwise.
 
